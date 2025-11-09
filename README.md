@@ -2,7 +2,7 @@
 # 🤖 AI ICP Fit Evaluator
 
 ## 📘 Project Overview
-The **AI ICP Fit Evaluator** is an intelligent Streamlit-based tool that automatically evaluates whether a candidate’s profile fits an **Ideal Customer Profile (ICP)** or **Ideal Candidate Profile** for a given **Job Description (JD)**.  
+The **AI ICP Fit Evaluator** is an intelligent Streamlit-based tool that automatically evaluates whether a candidate’s profile fits an **(ICP)** or **Ideal Candidate Profile** for a given **Job Description (JD)**.  
 
 It leverages **Google Gemini AI** to analyze resumes, LinkedIn profile text, or “About” sections and provides a quick and concise decision — **Fit** or **Not Fit** — along with a short reasoning (2–3 sentences).  
 
