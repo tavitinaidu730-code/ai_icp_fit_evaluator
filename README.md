@@ -179,6 +179,6 @@ By supporting resume uploads, LinkedIn text, and configurable ICP criteria, it d
 ---
 
 ## 💙 Credits
-**Developed & Designed by:** *Taviti Naidu Reddy*  
+**Developed & Designed by:** *Taviti Naidu Reddi*  
 **Powered by:** [Google Gemini AI](https://aistudio.google.com) • [Streamlit](https://streamlit.io) • [Python](https://www.python.org)  
 🚀 *Built with passion and precision!*
