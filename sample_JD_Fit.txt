@@ -1,0 +1,6 @@
+Senior Data Engineer
+Responsibilities:
+- Build ETL pipelines using SSIS or Azure Data Factory.
+- Maintain SQL Server databases and create reports with Power BI.
+Required: SQL, SSIS, Power BI, Python
+Nice-to-have: Azure Synapse, API integrations
