@@ -1,6 +1,0 @@
-John Doe
-Summary: Data engineer with 5 years experience in SQL, ETL, Power BI, and SSIS.
-Experience:
-- Built SSIS packages to load daily lockbox data.
-- Created Power BI reports for transaction monitoring.
-Skills: SQL, SSIS, Power BI, Python, Azure
