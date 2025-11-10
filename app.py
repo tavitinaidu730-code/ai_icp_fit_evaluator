@@ -2,6 +2,7 @@ import streamlit as st
 import google.generativeai as genai
 import os
 import json
+import re
 import base64
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
@@ -45,19 +46,6 @@ if not validate_google_api_key(GOOGLE_API_KEY):
     st.stop()
 
 # ==============================
-# LOAD ICP RULES
-# ==============================
-def load_icp_rules():
-    try:
-        with open("icp_rules.json", "r") as f:
-            return json.load(f)
-    except Exception as e:
-        st.warning(f"⚠️ Could not load rules file: {e}")
-        return {}
-
-rules = load_icp_rules()
-
-# ==============================
 # FILE READER
 # ==============================
 def read_file(uploaded_file):
@@ -70,6 +58,34 @@ def read_file(uploaded_file):
             for page in reader.pages:
                 text += page.extract_text() + "\n"
     return text.strip()
+
+# ==============================
+# JD ATTRIBUTE EXTRACTION
+# ==============================
+def extract_jd_summary(jd_text):
+    """Extract structured info (role, skills, experience) from JD"""
+    prompt = f"""
+Extract key details from the following Job Description.
+Return JSON only with fields:
+- role (main job title)
+- required_skills (list of 5-10 key skills)
+- experience_required (number of years or range)
+- summary (short summary in 1-2 sentences)
+
+Job Description:
+\"\"\"{jd_text.strip()}\"\"\"
+"""
+    try:
+        genai.configure(api_key=GOOGLE_API_KEY)
+        model = genai.GenerativeModel("gemini-2.5-flash")
+        resp = model.generate_content(prompt)
+        text = resp.text.strip()
+        m = re.search(r"(\{.*\})", text, flags=re.DOTALL)
+        jd_json = json.loads(m.group(1)) if m else json.loads(text)
+        return jd_json
+    except Exception as e:
+        print("JD extraction failed:", e)
+        return {}
 
 # ==============================
 # LOAD COMPANY LOGO AS BASE64
@@ -124,15 +140,14 @@ st.markdown(
             font-size: 1em;
         }
         .title-logo {
-            width: 200px;           /* increased from 70px */
-            height: 120px;          /* increased from 70px */
+            width: 200px;
+            height: 120px;
             border-radius: 16px;
             object-fit: contain;
             background: white;
-            padding: 10px;          /* a bit more padding for clean edges */
+            padding: 10px;
             box-shadow: 0px 4px 10px rgba(0,0,0,0.25);
         }
-
         .section-card {
             background-color: white;
             border-radius: 15px;
@@ -176,7 +191,7 @@ st.markdown(
         <img src="data:image/png;base64,{logo_base64}" class="title-logo" alt="Company Logo">
         <div class="title-center">
             <h1>🤖 AI ICP Fit Evaluator</h1>
-            <p>Evaluate  profiles, resumes, and job descriptions for ICP fit using <b>AI</b>.</p>
+            <p>Evaluate profiles, resumes, and job descriptions using <b> AI</b>.</p>
         </div>
         <div style="width:65px;"></div>
     </div>
@@ -184,26 +199,20 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-#st.info("✅ Gemini API key loaded successfully from `.env`")
-
 # ==============================
 # INPUT SECTIONS
 # ==============================
-#st.markdown("<div class='section-card'>", unsafe_allow_html=True)
 st.subheader("👤 Candidate Information")
-_url = st.text_input("🔗  Profile URL (optional):")
+_url = st.text_input("🔗 Profile URL (optional):")
 if _url:
-    st.warning("⚠️ As of now,  profile s cannot be read automatically. Please paste the profile text below or upload a resume instead.")
+    st.warning("⚠️ As of now, profile URLs cannot be read automatically. Please paste the profile text below or upload a resume instead.")
 
-_text = st.text_area("💬 Paste  'About' Section Text (or Summary):", value=st.session_state.get("_text", ""), height=150)
+_text = st.text_area("💬 Paste Candidate 'About' Section or Resume Text:", height=150)
 resume_file = st.file_uploader("📄 Upload Resume (optional)", type=["txt", "pdf"])
-st.markdown("</div>", unsafe_allow_html=True)
 
-#st.markdown("<div class='section-card'>", unsafe_allow_html=True)
 st.subheader("💼 Job Description")
 jd_text = st.text_area("🧾 Paste Job Description (JD):", height=150)
 jd_file = st.file_uploader("📎 Or Upload JD File (optional)", type=["txt", "pdf"])
-st.markdown("</div>", unsafe_allow_html=True)
 
 # ==============================
 # MAIN EVALUATION
@@ -211,42 +220,58 @@ st.markdown("</div>", unsafe_allow_html=True)
 if st.button("🚀 Evaluate Fit", use_container_width=True, type="primary"):
     jd_final = jd_text or read_file(jd_file)
     resume_text = read_file(resume_file)
+    candidate_text = _text or resume_text
 
     if not jd_final:
         st.error("Please provide a Job Description (JD).")
-    elif not _text and not resume_text:
-        st.error("Please provide  text or upload a resume.")
+    elif not candidate_text:
+        st.error("Please provide candidate text or upload a resume.")
     else:
         with st.spinner("Analyzing candidate fit... ⏳"):
-            prompt = f"""
-            You are an AI evaluator that determines whether a candidate fits an Ideal Customer Profile (ICP)
-            for a given job description.
+            jd_info = extract_jd_summary(jd_final)
 
-            Rules/Criteria:
-            {json.dumps(rules, indent=2)}
+            eval_prompt = f"""
+You are an expert AI talent evaluator.
+Compare the following Job Description summary and Candidate profile.
 
-            Job Description (JD):
-            {jd_final}
+JD Extracted Info:
+{json.dumps(jd_info, indent=2)}
 
-            Candidate Data:
-             Text: {_text}
-            Resume Text: {resume_text}
+Candidate Profile:
+{candidate_text}
 
-            Task:
-            - Compare the candidate’s background with the JD and ICP rules.
-            - Return this output format:
-              Fit Status: Fit / Not Fit
-              Reason (2–3 sentences)
-            """
-
+Task:
+- Assess whether this candidate fits the JD requirements.
+- Output JSON only with fields:
+  {{
+    "fit_status": "Fit" or "Not Fit",
+    "reason": "2-3 sentence explanation",
+    "matched_skills": [..],
+    "missing_skills": [..]
+  }}
+Keep it short and factual.
+"""
             try:
                 genai.configure(api_key=GOOGLE_API_KEY)
                 model = genai.GenerativeModel("gemini-2.5-flash")
-                response = model.generate_content(prompt)
-                st.markdown("<div class='output-card'>", unsafe_allow_html=True)
-                st.success("✅ Evaluation Complete")
-                st.markdown(response.text)
+                response = model.generate_content(eval_prompt)
+                text = response.text.strip()
+                m = re.search(r"(\{.*\})", text, flags=re.DOTALL)
+                json_text = m.group(1) if m else text
+                result = json.loads(json_text)
+
+                #st.markdown("<div class='output-card'>", unsafe_allow_html=True)
+                if result.get("fit_status", "").lower() == "fit":
+                    st.success(f"✅ Fit Status: {result['fit_status']}")
+                else:
+                    st.error(f"❌ Fit Status: {result.get('fit_status', 'Not Fit')}")
+                st.write("**Reason:**", result.get("reason", ""))
+                if result.get("matched_skills"):
+                    st.write("**Matched Skills:**", ", ".join(result["matched_skills"]))
+                if result.get("missing_skills"):
+                    st.write("**Missing Skills:**", ", ".join(result["missing_skills"]))
                 st.markdown("</div>", unsafe_allow_html=True)
+
             except Exception as e:
                 st.error(f"❌ API Error: {e}")
 
@@ -257,7 +282,7 @@ st.markdown(
     """
     <div style='text-align:center; color:#555; margin-top:25px;'>
         <hr style="border: none; height: 2px; background: linear-gradient(to right, #1976d2, #42a5f5); margin: 20px 0;">
-        <p>✨ Designed by <b> Taviti Naidu </b> || IncubXperts 🚀</p>
+        <p>✨ Designed by <b>Taviti Naidu</b> || IncubXperts 🚀</p>
     </div>
     """,
     unsafe_allow_html=True
