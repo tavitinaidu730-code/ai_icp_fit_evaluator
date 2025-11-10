@@ -1,0 +1,93 @@
+AI ICP FIT EVALUATOR - TEST CASES
+====================================
+
+This file contains 10 sample test cases (5 positive + 5 negative)
+to test JD-driven evaluation results.
+
+------------------------------------------------------------
+TEST CASE: 1_Positive_DotNetDeveloper
+JD:
+We are hiring a Senior .NET Developer with 5+ years of experience in ASP.NET Core, C#, RESTful API design, and SQL Server. The candidate should also be familiar with Azure DevOps and microservices architecture.
+
+Candidate Profile:
+6 years of experience as a .NET Developer building scalable enterprise applications using ASP.NET Core, C#, and SQL Server.
+Strong experience in designing REST APIs and deploying applications on Azure DevOps.
+Recently worked on microservices architecture for a large banking client.
+------------------------------------------------------------
+
+TEST CASE: 2_Negative_DotNetDeveloper_vs_HRManager
+JD:
+Looking for a Senior .NET Developer skilled in C#, Web APIs, and SQL Server.
+
+Candidate Profile:
+12 years of experience in HR management, employee engagement, and organizational leadership. Skilled in HR policy development and recruitment.
+------------------------------------------------------------
+
+TEST CASE: 3_Positive_DataAnalyst
+JD:
+Hiring a Data Analyst with 3–5 years of experience in SQL, Power BI, and Excel dashboards.
+Should be able to generate insights and automate reports.
+
+Candidate Profile:
+Data Analyst with 4 years of experience creating Power BI dashboards and SQL-based ETL workflows.
+Proficient in Excel automation and visualization.
+------------------------------------------------------------
+
+TEST CASE: 4_Negative_DataAnalyst_vs_Designer
+JD:
+We need a Data Analyst experienced in SQL, Tableau, and statistical modeling.
+
+Candidate Profile:
+3 years of experience as a Graphic Designer creating marketing visuals using Adobe Illustrator and Photoshop.
+Skilled in creative design, branding, and UI/UX.
+------------------------------------------------------------
+
+TEST CASE: 5_Positive_HRHead
+JD:
+HR Head for a 10,000-employee IT company. Must have expertise in HR strategy, employee engagement, and workforce planning for large organizations.
+
+Candidate Profile:
+15 years of HR leadership experience managing 12,000 employees in a large IT services firm.
+Skilled in workforce planning, employee relations, and HR strategy.
+------------------------------------------------------------
+
+TEST CASE: 6_Negative_HRHead_vs_SoftwareEngineer
+JD:
+HR Head for a large IT organization focusing on workforce strategy and employee engagement.
+
+Candidate Profile:
+Software Engineer with 8 years of experience in Java, Spring Boot, and REST API development.
+------------------------------------------------------------
+
+TEST CASE: 7_Positive_MarketingManager
+JD:
+Hiring a Marketing Manager with experience in digital campaigns, SEO, content strategy, and social media analytics.
+
+Candidate Profile:
+8 years of experience leading digital marketing campaigns, managing SEO projects, and developing social media strategies for brand growth.
+------------------------------------------------------------
+
+TEST CASE: 8_Negative_MarketingManager_vs_FinanceAnalyst
+JD:
+Marketing Manager with digital campaign and brand management experience.
+
+Candidate Profile:
+6 years of experience as a Finance Analyst managing budgets, cost analysis, and revenue forecasting.
+------------------------------------------------------------
+
+TEST CASE: 9_Positive_CloudArchitect
+JD:
+Looking for a Cloud Architect with expertise in AWS, Azure, and Docker/Kubernetes environments.
+
+Candidate Profile:
+Cloud Architect with 10 years of experience in AWS, Azure, and containerized microservices using Docker and Kubernetes.
+------------------------------------------------------------
+
+TEST CASE: 10_Negative_CloudArchitect_vs_DataEntry
+JD:
+Cloud Architect with AWS and Docker experience.
+
+Candidate Profile:
+Data Entry Operator with 5 years of experience in Excel, typing, and documentation work.
+------------------------------------------------------------
+
