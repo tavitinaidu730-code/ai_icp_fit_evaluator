@@ -128,32 +128,6 @@ streamlit run app.py
 
 Then open the provided local URL (usually `http://localhost:8501`).
 
----
-
-## 🧾 Example ICP Rules (`icp_rules.json`)
-
-```json
-{
-  "target_industries": ["Technology", "Finance", "Healthcare"],
-  "target_roles": ["Data Analyst", "SQL Developer", "Power BI Developer", "Data Engineer"],
-  "required_skills": ["SQL", "Power BI", "Python", "ETL"],
-  "minimum_experience_years": 2
-}
-```
-
-**You can customize this file** for each type of evaluation, for example:
-
-```json
-{
-  "target_industries": ["IT Services", "Software Development"],
-  "target_roles": [".NET Developer", "Software Engineer", "Backend Developer"],
-  "required_skills": ["C#", ".NET Core", "ASP.NET", "Web API", "SQL Server", "Azure DevOps"],
-  "minimum_experience_years": 3
-}
-```
-
----
-
 ## 🎨 UI Highlights
 - Modern gradient title bar with embedded logo (Base64)
 - Center-aligned AI title and tagline
